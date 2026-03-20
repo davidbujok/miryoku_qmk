@@ -40,6 +40,21 @@ MIRYOKU_LAYER_LIST
 };
 
 
+// per-key tapping term (longer for pinky GUI keys to reduce misfires)
+
+#ifdef TAPPING_TERM_PER_KEY
+uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case LGUI_T(KC_A):
+        case LGUI_T(KC_QUOT):
+            return 300;
+        default:
+            return TAPPING_TERM;
+    }
+}
+#endif
+
+
 // keymap
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -59,6 +74,12 @@ const key_override_t **key_overrides = (const key_override_t *[]){
 };
 
 
+// bootloader combos (outer column keys)
+
+const uint16_t PROGMEM bootloader_combo_left[] = {KC_TAB, OSM(MOD_LSFT), COMBO_END};
+const uint16_t PROGMEM bootloader_combo_right[] = {KC_BSPC, OSM(MOD_RSFT), COMBO_END};
+
+
 // thumb combos
 
 #if defined (MIRYOKU_KLUDGE_THUMBCOMBOS)
@@ -75,6 +96,8 @@ const uint16_t PROGMEM thumbcombos_sym[] = {KC_RPRN, KC_UNDS, COMBO_END};
   #endif
 const uint16_t PROGMEM thumbcombos_fun[] = {KC_SPC, KC_TAB, COMBO_END};
 combo_t key_combos[COMBO_COUNT] = {
+  COMBO(bootloader_combo_left, QK_BOOT),
+  COMBO(bootloader_combo_right, QK_BOOT),
   COMBO(thumbcombos_base_right, LT(U_FUN, KC_DEL)),
   COMBO(thumbcombos_base_left, LT(U_MEDIA, KC_ESC)),
   COMBO(thumbcombos_nav, KC_DEL),
@@ -87,5 +110,10 @@ combo_t key_combos[COMBO_COUNT] = {
   COMBO(thumbcombos_sym, KC_LPRN),
   #endif
   COMBO(thumbcombos_fun, KC_APP)
+};
+#else
+combo_t key_combos[COMBO_COUNT] = {
+  COMBO(bootloader_combo_left, QK_BOOT),
+  COMBO(bootloader_combo_right, QK_BOOT),
 };
 #endif

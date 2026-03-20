@@ -11,8 +11,11 @@
 #undef TAPPING_TERM
 #define TAPPING_TERM 200
 
-// Prevent normal rollover on alphas from accidentally triggering mods.
-#define IGNORE_MOD_TAP_INTERRUPT
+// Permissive Hold: nested key presses resolve as hold immediately
+#define PERMISSIVE_HOLD
+
+// Per-key tapping term for pinky GUI keys
+#define TAPPING_TERM_PER_KEY
 
 // Enable rapid switch from tap to hold, disables double tap hold auto-repeat.
 #define QUICK_TAP_TERM 0
@@ -34,9 +37,13 @@
 #undef MOUSEKEY_TIME_TO_MAX
 #define MOUSEKEY_TIME_TO_MAX    64
 
-// Thumb Combos
+// Combos
 #if defined (MIRYOKU_KLUDGE_THUMBCOMBOS)
-  #define COMBO_COUNT 8
+  #define COMBO_COUNT 10
   #define COMBO_TERM 200
   #define EXTRA_SHORT_COMBOS
+#else
+  #define COMBO_COUNT 2
+  #define COMBO_TERM 200
+  #define COMBO_ONLY_FROM_LAYER 0
 #endif
