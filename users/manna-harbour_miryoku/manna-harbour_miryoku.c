@@ -6,6 +6,7 @@
 #include QMK_KEYBOARD_H
 
 #include "manna-harbour_miryoku.h"
+#include "achordion.h"
 
 
 // Additional Features double tap guard
@@ -117,3 +118,28 @@ combo_t key_combos[COMBO_COUNT] = {
   COMBO(bootloader_combo_right, QK_BOOT),
 };
 #endif
+
+
+// Achordion: opposite-hands tap-hold resolution
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    if (!process_achordion(keycode, record)) { return false; }
+    return true;
+}
+
+void matrix_scan_user(void) {
+    achordion_task();
+}
+
+bool achordion_chord(uint16_t tap_hold_keycode,
+                     keyrecord_t *tap_hold_record,
+                     uint16_t other_keycode,
+                     keyrecord_t *other_record) {
+    // Thumb keys (row 3 left, row 7 right, cols 3-5) always hold
+    if (tap_hold_record->event.key.row % 4 == 3 &&
+        tap_hold_record->event.key.col >= 3) {
+        return true;
+    }
+    // Otherwise: opposite hands = hold, same hand = tap
+    return achordion_opposite_hands(tap_hold_record, other_record);
+}
